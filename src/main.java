@@ -22,18 +22,41 @@ class Test {
         BgRemoval b = new BgRemoval();
         b.doBackgroundRemoval(source);
 
-        //Instantiating the imagecodecs class
-        Imgcodecs imageCodecs = new Imgcodecs();
+        BufferedImage image = null;
+        File bgr = null;
 
-        //Reading the Image from the file and storing it in to a Matrix object
-        Mat matrix = imageCodecs.imread(input);
+        //read image file
+        try{
+            bgr = new File("./no.jpg");
+            image = ImageIO.read(bgr);
+            System.out.println("Image Loaded ..........");
+        }catch(IOException e){
+            System.out.println("Error: "+e);
+        }
 
-        System.out.println("Image Loaded ..........");
-        String bg = " ./test.jpg";
+        //write image
+        try{
+            bgr = new File("~/Desktop/test.jpg");
+            ImageIO.write(image, "jpg", bgr);
+            System.out.println("Image saved ..........");
+        }catch(IOException e){
+            System.out.println("Error: "+e);
+        }
 
-        //Writing the image
-        imageCodecs.imwrite(bg, matrix);
-        System.out.println("Image Saved ............");
+
+
+//        //Instantiating the imagecodecs class
+//        Imgcodecs imageCodecs = new Imgcodecs();
+//
+//        //Reading the Image from the file and storing it in to a Matrix object
+//        Mat matrix = imageCodecs.imread(input);
+//
+//        System.out.println("Image Loaded ..........");
+//        String bg = " ./test.jpg";
+//
+//        //Writing the image
+//        imageCodecs.imwrite(bg, matrix);
+//        System.out.println("Image Saved ............");
 
         // Creating the empty destination matrix
 //        Mat gray = new Mat();
