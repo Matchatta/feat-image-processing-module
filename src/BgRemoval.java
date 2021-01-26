@@ -6,13 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BgRemoval {
-    String input = "./no.jpg";
-
-//    // To Read the image
-//    Mat source = Imgcodecs.imread(input);
 
     //BACKGROUND REMOVAL
-    private Mat doBackgroundRemoval(Mat source)
+    public Mat doBackgroundRemoval(Mat source)
     {
         // init
         Mat hsvImg = new Mat();
@@ -38,13 +34,16 @@ public class BgRemoval {
         // create the new image
         Mat foreground = new Mat(source.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
         source.copyTo(foreground, thresholdImg);
-        Imgcodecs.imwrite("bg removal", foreground);
+
+//        String file = " ./test.jpg";
+//        Imgcodecs fore = new Imgcodecs();
+//        fore.imwrite(file, foreground);
 
         return foreground;
     }
 
     //Histogram
-    private double getHistAverage(Mat hsvImg, Mat hueValues)
+    public double getHistAverage(Mat hsvImg, Mat hueValues)
     {
         // init
         double average = 0.0;
