@@ -14,6 +14,7 @@ class Test {
 
         // To Read the image
         Mat source = Imgcodecs.imread(input);
+        BgRemoval b = new BgRemoval();
 
         // Creating the empty destination matrix
         Mat gray = new Mat();
@@ -26,9 +27,9 @@ class Test {
         Mat wide_sch = new Mat();
         Mat wide_lap = new Mat();
 
-        // Reduce noise by blurring with a Gaussian filter (kernel size = 5)
-        Imgproc.GaussianBlur( source, source, new Size(5, 5), 0, 0, Core.BORDER_DEFAULT );
-
+//        // Reduce noise by blurring with a Gaussian filter (kernel size = 5)
+////        Imgproc.GaussianBlur( source, source, new Size(5, 5), 0, 0, Core.BORDER_DEFAULT );
+//
         // Converting the image to gray scale and
         // saving it in the dst matrix
         Imgproc.cvtColor(source, gray, Imgproc.COLOR_RGB2GRAY);
@@ -52,65 +53,12 @@ class Test {
 
         // Writing the image
         Imgcodecs.imwrite("./gray.jpg", gray);
-        Imgcodecs.imwrite("./CannyEdge.jpg",canny);
-        Imgcodecs.imwrite("./SobelEdge.jpg", sobel);
-        Imgcodecs.imwrite("./ScharrEdge.jpg", scharr);
-        Imgcodecs.imwrite("./LaplacianEdge.jpg", laplacian);
-        System.out.println("Convert image is successfully");
+//        Imgcodecs.imwrite("./CannyEdge.jpg",canny);
+//        Imgcodecs.imwrite("./SobelEdge.jpg", sobel);
+//        Imgcodecs.imwrite("./ScharrEdge.jpg", scharr);
+//        Imgcodecs.imwrite("./LaplacianEdge.jpg", laplacian);
+//        System.out.println("Convert image is successfully");
 
     }
 
-
-    //BACKGROUND REMOVAL
-    private Mat doBackgroundRemoval(Mat source)
-    {
-        // init
-        Mat hsvImg = new Mat();
-        List<Mat> hsvPlanes = new ArrayList<>();
-        Mat thresholdImg = new Mat();
-
-        // threshold the image with the histogram average value
-        hsvImg.create(source.size(), CvType.CV_8U);
-        Imgproc.cvtColor(source, hsvImg, Imgproc.COLOR_BGR2HSV);
-        Core.split(hsvImg, hsvPlanes);
-
-        double threshValue = this.getHistAverage(hsvImg, hsvPlanes.get(0));
-        //a new binary threshold
-        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 179.0, Imgproc.THRESH_BINARY);
-        Imgproc.blur(thresholdImg, thresholdImg, new Size(5, 5));
-
-        // dilate to fill gaps, erode to smooth edges
-        Imgproc.dilate(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
-        Imgproc.erode(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
-
-        Imgproc.threshold(thresholdImg, thresholdImg, threshValue, 179.0, Imgproc.THRESH_BINARY);
-
-        // create the new image
-        Mat foreground = new Mat(source.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
-        source.copyTo(foreground, thresholdImg);
-
-        return foreground;
-    }
-
-    //Histogram
-    private double getHistAverage(Mat hsvImg, Mat hueValues)
-    {
-        // init
-        double average = 0.0;
-        Mat hist_hue = new Mat();
-        MatOfInt histSize = new MatOfInt(180);
-        List<Mat> hue = new ArrayList<>();
-        hue.add(hueValues);
-
-        // compute the histogram
-        Imgproc.calcHist(hue, new MatOfInt(0), new Mat(), hist_hue, histSize, new MatOfFloat(0, 179));
-
-        // get the average for each bin
-        for (int h = 0; h < 180; h++)
-        {
-            average += (hist_hue.get(h, 0)[0] * h);
-        }
-
-        return average = average / hsvImg.size().height / hsvImg.size().width;
-    }
 }
