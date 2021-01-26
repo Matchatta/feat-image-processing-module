@@ -1,6 +1,7 @@
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.core.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,22 +23,19 @@ public class BgRemoval {
 
         double threshValue = this.getHistAverage(hsvImg, hsvPlanes.get(0));
         //a new binary threshold
-        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 179.0, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
         Imgproc.blur(thresholdImg, thresholdImg, new Size(5, 5));
 
         // dilate to fill gaps, erode to smooth edges
         Imgproc.dilate(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
         Imgproc.erode(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
 
-        Imgproc.threshold(thresholdImg, thresholdImg, threshValue, 179.0, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(thresholdImg, thresholdImg, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
 
         // create the new image
         Mat foreground = new Mat(source.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
         source.copyTo(foreground, thresholdImg);
-
-//        String file = " ./test.jpg";
-//        Imgcodecs fore = new Imgcodecs();
-//        fore.imwrite(file, foreground);
+        Imgcodecs.imwrite("bg remove.jpg", foreground);
 
         return foreground;
     }
@@ -63,4 +61,6 @@ public class BgRemoval {
 
         return average = average / hsvImg.size().height / hsvImg.size().width;
     }
+
+
 }

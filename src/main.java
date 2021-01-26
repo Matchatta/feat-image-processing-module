@@ -19,44 +19,9 @@ class Test {
 
         // To Read the image
         Mat source = Imgcodecs.imread(input);
+        Imgcodecs.imwrite("./test.jpg", source);
         BgRemoval b = new BgRemoval();
         b.doBackgroundRemoval(source);
-
-        BufferedImage image = null;
-        File bgr = null;
-
-        //read image file
-        try{
-            bgr = new File("./no.jpg");
-            image = ImageIO.read(bgr);
-            System.out.println("Image Loaded ..........");
-        }catch(IOException e){
-            System.out.println("Error: "+e);
-        }
-
-        //write image
-        try{
-            bgr = new File("~/Desktop/test.jpg");
-            ImageIO.write(image, "jpg", bgr);
-            System.out.println("Image saved ..........");
-        }catch(IOException e){
-            System.out.println("Error: "+e);
-        }
-
-
-
-//        //Instantiating the imagecodecs class
-//        Imgcodecs imageCodecs = new Imgcodecs();
-//
-//        //Reading the Image from the file and storing it in to a Matrix object
-//        Mat matrix = imageCodecs.imread(input);
-//
-//        System.out.println("Image Loaded ..........");
-//        String bg = " ./test.jpg";
-//
-//        //Writing the image
-//        imageCodecs.imwrite(bg, matrix);
-//        System.out.println("Image Saved ............");
 
         // Creating the empty destination matrix
 //        Mat gray = new Mat();
@@ -72,8 +37,8 @@ class Test {
 //        // Reduce noise by blurring with a Gaussian filter (kernel size = 5)
 ////        Imgproc.GaussianBlur( source, source, new Size(5, 5), 0, 0, Core.BORDER_DEFAULT );
 //
-//        // Converting the image to gray scale and
-//        // saving it in the dst matrix
+        // Converting the image to gray scale and
+        // saving it in the dst matrix
 //        Imgproc.cvtColor(source, gray, Imgproc.COLOR_RGB2GRAY);
 //
 //        //Canny EdgeDetection
