@@ -23,25 +23,35 @@ public class BgRemoval {
 
         double threshValue = this.getHistAverage(hsvImg, hsvPlanes.get(0));
         //a new binary threshold
-        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
+        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY_INV);
         Imgproc.blur(thresholdImg, thresholdImg, new Size(5, 5));
 
         // dilate to fill gaps, erode to smooth edges
-        Imgproc.dilate(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
-        Imgproc.erode(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
+        Imgproc.dilate(thresholdImg, thresholdImg, new Mat(), new Point(-1, -1), 1);
+        Imgproc.erode(thresholdImg, thresholdImg, new Mat(), new Point(-1, -1), 3);
 
-        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
+        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY_INV);
 
         // create the new image
-        Mat foreground = new Mat(source.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
+        Mat foreground = new Mat(source.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
         source.copyTo(foreground, thresholdImg);
         Imgcodecs.imwrite("bg remove.jpg", foreground);
+
+        //Post
+        Imgproc.cvtColor(foreground, source, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.threshold(source, source, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
+//        String file = "./asd.jpg";
+        double kernelSize = source.width() / 100;
+        Mat kernel = new Mat(new Size(kernelSize, kernelSize), CvType.CV_8UC1);
+        Imgproc.morphologyEx(source, source, Imgproc.MORPH_OPEN, kernel);
+//        imageCodecs.imwrite(file, image);
+        Imgcodecs.imwrite("bg remove11.jpg", source);
 
         return foreground;
     }
 
     //Histogram
-    public double getHistAverage(Mat hsvImg, Mat hueValues)
+    private double getHistAverage(Mat hsvImg, Mat hueValues)
     {
         // init
         double average = 0.0;

@@ -19,9 +19,10 @@ class Test {
 
         // To Read the image
         Mat source = Imgcodecs.imread(input);
-        Imgcodecs.imwrite("./test.jpg", source);
+//        Imgcodecs.imwrite("./test.jpg", source);
         BgRemoval b = new BgRemoval();
         b.doBackgroundRemoval(source);
+
 
         // Creating the empty destination matrix
 //        Mat gray = new Mat();
