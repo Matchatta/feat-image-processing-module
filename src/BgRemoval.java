@@ -30,7 +30,7 @@ public class BgRemoval {
         Imgproc.dilate(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
         Imgproc.erode(thresholdImg, thresholdImg, new Mat(), new Point(-1, 1), 6);
 
-        Imgproc.threshold(thresholdImg, thresholdImg, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
+        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
 
         // create the new image
         Mat foreground = new Mat(source.size(), CvType.CV_8UC3, new Scalar(255, 255, 255));
