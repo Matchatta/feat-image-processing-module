@@ -26,8 +26,9 @@ class Test {
 
 //        //Call bg removal class
         BgRemoval b = new BgRemoval();
-        b.doBackgroundRemoval(source);
-        b.detectEdge(source);
+        Mat graph = b.extractFoot(source, "./gg.jpg", 0, 712, 0, 1420);
+        b.doBackgroundRemoval(graph);
+//        b.detectEdge(source);
 
 //        Mat test = new Mat();
 //        Mat wide_test = new Mat(source.rows(),source.cols(),source.type());

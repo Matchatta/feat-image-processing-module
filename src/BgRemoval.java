@@ -72,6 +72,24 @@ public class BgRemoval {
         return foreground;
     }
 
+    public Mat extractFoot(Mat image, String fileNameWithCompletePath, int xOne, int xTwo, int yOne, int yTwo) throws CvException {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        Imgproc.cvtColor(image,image,Imgproc.COLOR_RGBA2RGB, 0);
+        Scalar co = new Scalar(0.0, 0.0, 0.0);
+        Size s = new Size(image.width(), image.height());
+        Rect rectangle = new Rect(xOne, yOne, xTwo, yTwo);
+        Mat result = new Mat();
+        Mat bgdModel = new Mat();
+        Mat fgdModel = new Mat();
+        Mat source = new Mat(1, 1, CvType.CV_8U, new Scalar(3));
+        Imgproc.grabCut(image, result, rectangle, bgdModel, fgdModel, 8, Imgproc.GC_INIT_WITH_RECT);
+        Core.compare(result, source, result, Core.CMP_EQ);
+        Mat foreground = new Mat(image.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
+        image.copyTo(foreground, result);
+        Imgcodecs.imwrite(fileNameWithCompletePath, foreground);
+        return foreground;
+    }
+
     //Histogram
     private double getHistAverage(Mat bright, Mat hueValues)
     {
