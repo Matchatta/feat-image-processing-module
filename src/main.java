@@ -15,7 +15,7 @@ class Test {
 
         //Loading the OpenCV core library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        String input = "./left_sole.jpg";
+        String input = "./no4.jpg";
 
         // To Read the image
         Mat source = Imgcodecs.imread(input);
@@ -24,10 +24,17 @@ class Test {
 //        Imgproc.GaussianBlur( source, source, new Size(5, 5), 0, 0, Core.BORDER_DEFAULT );
 
 
-        //Call bg removal class
+//        //Call bg removal class
         BgRemoval b = new BgRemoval();
         b.doBackgroundRemoval(source);
         b.detectEdge(source);
+
+//        Mat test = new Mat();
+//        Mat wide_test = new Mat(source.rows(),source.cols(),source.type());
+//        Imgproc.threshold(source, test, 200,255, Imgproc.THRESH_TOZERO_INV);
+//        wide_test.convertTo(test, CvType.CV_8UC3);
+//        Imgcodecs.imwrite("./s.jpg",source);
+//        Imgcodecs.imwrite("./threshold.jpg",test);
 
     }
 

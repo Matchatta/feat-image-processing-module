@@ -15,22 +15,34 @@ public class BgRemoval {
     public Mat doBackgroundRemoval(Mat source)
     {
 
+        double alpha = -1;
+        double beta = 150;
         // init
         Mat hsvImg = new Mat();
         List<Mat> hsvPlanes = new ArrayList<>();
         Mat thresholdImg = new Mat();
-        //add more sharpness
 
+        //brightness
+        Mat blur = new Mat();
+        Imgproc.GaussianBlur(source, blur, new Size(27, 27), 10, 10, Core.BORDER_DEFAULT);
+        Mat bright = new Mat(blur.rows(),blur.cols(), blur.type());
+        Mat bctest = new Mat();
+        source.convertTo(bright, 0, alpha, beta);
+        Imgcodecs.imwrite("./brightness.jpg", bright);
+        Imgproc.Canny(bright, bctest, 20, 100, 3, false);
+        bctest.convertTo(bright, CvType.CV_8UC3);
+        Imgcodecs.imwrite("./bctest.jpg", bctest);
 
+        //HSV Image
         // threshold the image with the histogram average value
         hsvImg.create(source.size(), CvType.CV_8U);
         Imgproc.cvtColor(source, hsvImg, Imgproc.COLOR_BGR2HSV);
         // enhance
-        Imgproc.GaussianBlur( hsvImg, hsvImg, new Size(15, 15), 10, 10, Core.BORDER_DEFAULT );
+        Imgproc.GaussianBlur( hsvImg, hsvImg, new Size(27, 27), 10, 10, Core.BORDER_DEFAULT );
         Core.split(hsvImg, hsvPlanes);
         Imgcodecs.imwrite("./test.jpg", hsvImg);
 
-        double threshValue = this.getHistAverage(hsvImg, hsvPlanes.get(0));
+        double threshValue = this.getHistAverage(bright, hsvPlanes.get(0));
         // a new binary threshold
         Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY_INV);
         Imgproc.blur(thresholdImg, thresholdImg, new Size(5, 5));
@@ -51,7 +63,7 @@ public class BgRemoval {
         Imgproc.cvtColor(foreground, source, Imgproc.COLOR_BGR2GRAY);
         Imgproc.threshold(source, source, threshValue, 255.0, Imgproc.THRESH_BINARY_INV);
 //        String file = "./asd.jpg";
-        double kernelSize = source.width() / 100;
+        double kernelSize = source.width() / 220;
         Mat kernel = new Mat(new Size(kernelSize, kernelSize), CvType.CV_8UC1);
         Imgproc.morphologyEx(source, source, Imgproc.MORPH_OPEN, kernel);
 //        imageCodecs.imwrite(file, image);
@@ -61,7 +73,7 @@ public class BgRemoval {
     }
 
     //Histogram
-    private double getHistAverage(Mat hsvImg, Mat hueValues)
+    private double getHistAverage(Mat bright, Mat hueValues)
     {
         // init
         double average = 0.0;
@@ -79,53 +91,14 @@ public class BgRemoval {
             average += (hist_hue.get(h, 0)[0] * h);
         }
 
-        return average = average / hsvImg.size().height / hsvImg.size().width;
+        return average = average / bright.size().height / bright.size().width;
     }
+
 
     public Mat detectEdge(Mat source) {
         Mat edge = new Mat();
         Imgproc.Canny(source, edge, 20, 100, 3, false);
         Imgcodecs.imwrite("canny.jpg", edge);
-        // Creating the empty destination matrix
-//        Mat gray = new Mat();
-//        Mat canny = new Mat();
-//        Mat sobel = new Mat();
-//        Mat scharr = new Mat();
-//        Mat laplacian = new Mat();
-//        Mat wide_can = new Mat();
-//        Mat wide_sol = new Mat();
-//        Mat wide_sch = new Mat();
-//        Mat wide_lap = new Mat();
-
-
-
-        // Converting the image to gray scale and
-        // saving it in the dst matrix
-//        Imgproc.cvtColor(source, gray, Imgproc.COLOR_RGB2GRAY);
-//
-//        //Canny EdgeDetection
-//        Imgproc.Canny(gray, wide_can, 20, 100, 3, false);
-//        wide_can.convertTo(canny, CvType.CV_8UC3);
-//
-//        //Sobel EdgeDetection (Applying sobel derivative with values x:0 y:1)
-//        Imgproc.Sobel(gray, wide_sol, -1, 0, 1, 3);
-//        wide_sol.convertTo(sobel, CvType.CV_8UC3);
-//
-//        //Scharr EdgeDetection (Applying scharr derivative with values x:1 y:0)
-//        Imgproc.Scharr(gray, wide_sch, Imgproc.CV_SCHARR, 1, 0);
-//        wide_sch.convertTo(scharr, CvType.CV_8UC3);
-//
-//        //Laplacian
-//        Imgproc.Laplacian(gray, wide_lap, CvType.CV_16S, 3, 3, 0, Core.BORDER_DEFAULT);
-//        wide_lap.convertTo(laplacian, CvType.CV_8UC3);
-
-
-        // Writing the image
-//        Imgcodecs.imwrite("./gray.jpg", gray);
-//        Imgcodecs.imwrite("./CannyEdge.jpg",canny);
-//        Imgcodecs.imwrite("./SobelEdge.jpg", sobel);
-//        Imgcodecs.imwrite("./ScharrEdge.jpg", scharr);
-//        Imgcodecs.imwrite("./LaplacianEdge.jpg", laplacian);
         return edge;
     }
 
