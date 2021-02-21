@@ -26,12 +26,21 @@ public class BgRemoval {
         Mat blur = new Mat();
         Imgproc.GaussianBlur(source, blur, new Size(27, 27), 10, 10, Core.BORDER_DEFAULT);
         Mat bright = new Mat(blur.rows(),blur.cols(), blur.type());
+        Mat bright1 = new Mat(blur.rows(),blur.cols(), blur.type());
         Mat bctest = new Mat();
+        Mat scharr = new Mat();
         source.convertTo(bright, 0, alpha, beta);
         Imgcodecs.imwrite("./brightness.jpg", bright);
-        Imgproc.Canny(bright, bctest, 20, 100, 3, false);
+        Imgproc.Scharr(bright, bctest, Imgproc.CV_SCHARR, 1, 0);
         bctest.convertTo(bright, CvType.CV_8UC3);
+        bctest.convertTo(bright1,0, -5, 200);
+        Imgcodecs.imwrite("./brightness11.jpg", bright1);
+//        Imgproc.Canny(scharr, bctest, 20, 100, 3, false);
+//        bctest.convertTo(scharr, CvType.CV_8UC3);
         Imgcodecs.imwrite("./bctest.jpg", bctest);
+
+        //add noise
+
 
         //HSV Image
         // threshold the image with the histogram average value
@@ -42,7 +51,7 @@ public class BgRemoval {
         Core.split(hsvImg, hsvPlanes);
         Imgcodecs.imwrite("./test.jpg", hsvImg);
 
-        double threshValue = this.getHistAverage(bright, hsvPlanes.get(0));
+        double threshValue = this.getHistAverage(bright1, hsvPlanes.get(0));
         // a new binary threshold
         Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY_INV);
         Imgproc.blur(thresholdImg, thresholdImg, new Size(5, 5));
@@ -72,26 +81,26 @@ public class BgRemoval {
         return foreground;
     }
 
-    public Mat extractFoot(Mat image, String fileNameWithCompletePath, int xOne, int xTwo, int yOne, int yTwo) throws CvException {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        Imgproc.cvtColor(image,image,Imgproc.COLOR_RGBA2RGB, 0);
-        Scalar co = new Scalar(0.0, 0.0, 0.0);
-        Size s = new Size(image.width(), image.height());
-        Rect rectangle = new Rect(xOne, yOne, xTwo, yTwo);
-        Mat result = new Mat();
-        Mat bgdModel = new Mat();
-        Mat fgdModel = new Mat();
-        Mat source = new Mat(1, 1, CvType.CV_8U, new Scalar(3));
-        Imgproc.grabCut(image, result, rectangle, bgdModel, fgdModel, 8, Imgproc.GC_INIT_WITH_RECT);
-        Core.compare(result, source, result, Core.CMP_EQ);
-        Mat foreground = new Mat(image.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
-        image.copyTo(foreground, result);
-        Imgcodecs.imwrite(fileNameWithCompletePath, foreground);
-        return foreground;
-    }
+//    public Mat extractFoot(Mat image, String fileNameWithCompletePath, int xOne, int xTwo, int yOne, int yTwo) throws CvException {
+//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//        Imgproc.cvtColor(image,image,Imgproc.COLOR_RGBA2RGB, 0);
+//        Scalar co = new Scalar(0.0, 0.0, 0.0);
+//        Size s = new Size(image.width(), image.height());
+//        Rect rectangle = new Rect(xOne, yOne, xTwo, yTwo);
+//        Mat result = new Mat();
+//        Mat bgdModel = new Mat();
+//        Mat fgdModel = new Mat();
+//        Mat source = new Mat(1, 1, CvType.CV_8U, new Scalar(3));
+//        Imgproc.grabCut(image, result, rectangle, bgdModel, fgdModel, 8, Imgproc.GC_INIT_WITH_RECT);
+//        Core.compare(result, source, result, Core.CMP_EQ);
+//        Mat foreground = new Mat(image.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
+//        image.copyTo(foreground, result);
+//        Imgcodecs.imwrite(fileNameWithCompletePath, foreground);
+//        return foreground;
+//    }
 
     //Histogram
-    private double getHistAverage(Mat bright, Mat hueValues)
+    private double getHistAverage(Mat bright1, Mat hueValues)
     {
         // init
         double average = 0.0;
@@ -109,7 +118,7 @@ public class BgRemoval {
             average += (hist_hue.get(h, 0)[0] * h);
         }
 
-        return average = average / bright.size().height / bright.size().width;
+        return average = average / bright1.size().height / bright1.size().width;
     }
 
 

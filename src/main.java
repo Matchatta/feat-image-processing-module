@@ -15,7 +15,7 @@ class Test {
 
         //Loading the OpenCV core library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        String input = "./no4.jpg";
+        String input = "./left_sole.jpg";
 
         // To Read the image
         Mat source = Imgcodecs.imread(input);
@@ -26,9 +26,10 @@ class Test {
 
 //        //Call bg removal class
         BgRemoval b = new BgRemoval();
-        Mat graph = b.extractFoot(source, "./gg.jpg", 0, 712, 0, 1420);
-        b.doBackgroundRemoval(graph);
-//        b.detectEdge(source);
+//        Mat graph = b.extractFoot(source, "./gg.jpg", 0, 674, 0, 1350);
+//        b.doBackgroundRemoval(graph);
+        b.doBackgroundRemoval(source);
+        b.detectEdge(source);
 
 //        Mat test = new Mat();
 //        Mat wide_test = new Mat(source.rows(),source.cols(),source.type());
