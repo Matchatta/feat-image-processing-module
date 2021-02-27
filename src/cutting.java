@@ -3,6 +3,9 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 import static org.opencv.core.CvType.CV_8UC1;
 
 public class cutting {
@@ -28,6 +31,24 @@ public class cutting {
         System.out.println(count_white);
         Imgcodecs.imwrite("testclass.jpg", source);
         return source;
+    }
+
+    public static BufferedImage colorToAlpha(BufferedImage raw, Color remove)
+    {
+        int WIDTH = raw.getWidth();
+        int HEIGHT = raw.getHeight();
+        BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_ARGB);
+        int pixels[]=new int[WIDTH*HEIGHT];
+        raw.getRGB(0, 0, WIDTH, HEIGHT, pixels, 0, WIDTH);
+        for(int i=0; i<pixels.length;i++)
+        {
+            if (pixels[i] == remove.getRGB())
+            {
+                pixels[i] = 0x00ffffff;
+            }
+        }
+        image.setRGB(0, 0, WIDTH, HEIGHT, pixels, 0, WIDTH);
+        return image;
     }
 
 }
