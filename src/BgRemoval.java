@@ -66,7 +66,7 @@ public class BgRemoval {
         Mat foreground = new Mat(source.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
         source.copyTo(foreground, thresholdImg);
 
-        Imgcodecs.imwrite("bg remove.jpg", foreground);
+        Imgcodecs.imwrite("./bg remove.jpg", foreground);
 
         //Post
         Imgproc.cvtColor(foreground, source, Imgproc.COLOR_BGR2GRAY);
@@ -76,7 +76,7 @@ public class BgRemoval {
         Mat kernel = new Mat(new Size(kernelSize, kernelSize), CvType.CV_8UC1);
         Imgproc.morphologyEx(source, source, Imgproc.MORPH_OPEN, kernel);
 //        imageCodecs.imwrite(file, image);
-        Imgcodecs.imwrite("bg remove11.jpg", source);
+        Imgcodecs.imwrite("./bg remove11.jpg", source);
 
         return foreground;
     }
