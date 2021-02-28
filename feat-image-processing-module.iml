@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="opencv-3413" level="project" />
     <orderEntry type="library" name="opencv4" level="project" />
+    <orderEntry type="library" name="opencv-451" level="project" />
   </component>
 </module>
