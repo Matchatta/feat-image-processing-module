@@ -15,7 +15,7 @@ class Test {
 
         //Loading the OpenCV core library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        String input = "./no1.jpg";
+        String input = "./no.jpg";
 
         // To Read the image
         Mat source = Imgcodecs.imread(input);

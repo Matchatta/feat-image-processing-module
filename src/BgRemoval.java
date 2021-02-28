@@ -53,14 +53,14 @@ public class BgRemoval {
 
         double threshValue = this.getHistAverage(bright1, hsvPlanes.get(0));
         // a new binary threshold
-        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY_INV);
+        Imgproc.threshold(hsvPlanes.get(2), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY);
         Imgproc.blur(thresholdImg, thresholdImg, new Size(5, 5));
 
         // dilate to fill gaps, erode to smooth edges
         Imgproc.dilate(thresholdImg, thresholdImg, new Mat(), new Point(-1, -1), 1);
         Imgproc.erode(thresholdImg, thresholdImg, new Mat(), new Point(-1, -1), 3);
 
-        Imgproc.threshold(hsvPlanes.get(0), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY_INV);
+//        Imgproc.threshold(hsvPlanes.get(2), thresholdImg, threshValue, 255, Imgproc.THRESH_BINARY);
 
         // create the new image
         Mat foreground = new Mat(source.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));

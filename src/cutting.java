@@ -20,7 +20,7 @@ public class cutting {
             color_switch = 0;
             for (int x = 0; x < source.width(); x++){
                 double[] color = source.get(y, x);
-                if(color[0] != current_color && y < source.height()/2){
+                if(color[0] != current_color && y < source.height()/3){
                     if(current_color != -1){
                         color_switch++;
                     }
